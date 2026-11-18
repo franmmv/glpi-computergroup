@@ -1,0 +1,30 @@
+name: Publish plugin ZIP
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Build installable ZIP
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="${TAG#v}"
+          grep -Fq "'version' => '$version'," setup.php
+          git archive --format=zip --prefix=computergroup/ --output="computergroup-$version.zip" HEAD -- LICENSE README.md hook.php setup.php public src templates
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" "computergroup-${TAG#v}.zip" --verify-tag --generate-notes --title "ComputerGroup ${TAG#v}"

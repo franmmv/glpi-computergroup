@@ -1,0 +1,51 @@
+<div data-computergroup-results class="table-responsive-lg">
+    {% if groups is empty %}
+        <p class="m-3">{{ __('No results found') }}</p>
+    {% else %}
+        <table class="table card-table table-hover table-striped">
+            <thead>
+                <tr>
+                    {% for column in columns %}
+                        <th scope="col">{{ column.name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            {% for location in groups %}
+                {% set location_id = 'computergroup-location-' ~ loop.index %}
+                <tbody>
+                    <tr>
+                        <th colspan="{{ columns|length }}"
+                            style="--tblr-table-bg: color-mix(in srgb, var(--tblr-bg-surface) 86%, var(--tblr-body-color));">
+                            <button type="button" class="btn btn-sm btn-ghost-secondary" data-group-toggle
+                                    aria-expanded="false" aria-controls="{{ location_id }}">
+                                <i class="ti ti-chevron-right" aria-hidden="true"></i>
+                                {{ location.name }} ({{ location.count }})
+                            </button>
+                        </th>
+                    </tr>
+                </tbody>
+                <tbody id="{{ location_id }}" class="d-none">
+                    {% for state in location.states %}
+                        <tr class="table-active">
+                            <th colspan="{{ columns|length }}" class="ps-4">
+                                <button type="button" class="btn btn-sm btn-ghost-secondary" data-group-toggle
+                                        aria-expanded="false">
+                                    <i class="ti ti-chevron-right" aria-hidden="true"></i>
+                                    {{ state.name }} ({{ state.rows|length }})
+                                </button>
+                            </th>
+                        </tr>
+                        {% for row in state.rows %}
+                            <tr data-group-computer class="d-none">
+                                {% for column in columns %}
+                                    {% set key = column.itemtype ~ '_' ~ column.id %}
+                                    {{ showItem(0, row[key].displayname|default(''), 0, 0) }}
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            {% endfor %}
+        </table>
+    {% endif %}
+</div>
