@@ -14,6 +14,6 @@ function plugin_version_computergroup(): array
         'version' => '1.0.4',
         'author' => 'Fran M.',
         'license' => 'GPL-3.0-or-later',
-        'requirements' => ['glpi' => ['min' => '12.0.2', 'max' => '12.0.3']],
+        'requirements' => ['glpi' => ['min' => '12.0.0', 'max' => '12.99.99']],
     ];
 }
